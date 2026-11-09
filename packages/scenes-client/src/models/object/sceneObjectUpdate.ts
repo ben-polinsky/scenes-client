@@ -2,7 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-import { SchemaData, SchemaKind, SchemaVersion } from "./types/sceneObjectSchemas.js";
+import { AnySchemaData, AnySchemaVersion, SchemaKind } from "./types/sceneObjectSchemas.js";
 
 /**
  * Interface for updating scene objects
@@ -17,7 +17,7 @@ import { SchemaData, SchemaKind, SchemaVersion } from "./types/sceneObjectSchema
  */
 export interface SceneObjectUpdate<
   K extends SchemaKind = SchemaKind,
-  V extends SchemaVersion<K> = SchemaVersion<K>,
+  V extends AnySchemaVersion<K> = AnySchemaVersion<K>,
 > {
   /** Optional display name for the scene object. Pass `null` to remove. */
   displayName?: string | null;
@@ -32,7 +32,7 @@ export interface SceneObjectUpdate<
   /** Optional visibility state for the scene object. Pass `null` to remove. */
   visible?: boolean | null;
   /** Schema-specific data to update for the scene object */
-  data?: SchemaData<K, V>;
+  data?: AnySchemaData<K, V>;
 }
 
 export type SceneObjectUpdateById = SceneObjectUpdate & {

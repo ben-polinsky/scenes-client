@@ -729,3 +729,26 @@ export type SchemaVersion<K extends SchemaKind> = keyof ScenesApiSchemas[K];
  * ```
  */
 export type SchemaData<K extends SchemaKind, V extends SchemaVersion<K>> = ScenesApiSchemas[K][V];
+
+/**
+ * Versions of each kind in `K`, taken one kind at a time.
+ *
+ * `SchemaVersion<K>` keeps only the versions that every kind in `K` shares.
+ * For all kinds that is `"1.0.0"`, which drops newer versions such as Cutout `"2.0.0"`.
+ * Use this type when `K` can be a union of kinds.
+ * @template K Schema kind or union of schema kinds
+ */
+export type AnySchemaVersion<K extends SchemaKind> = K extends SchemaKind
+  ? SchemaVersion<K>
+  : never;
+
+/**
+ * Data of each kind in `K` at each of its versions in `V`.
+ * Pairs of a kind and a version that do not exist are left out.
+ * @template K Schema kind or union of schema kinds
+ * @template V Schema version or union of schema versions
+ */
+export type AnySchemaData<
+  K extends SchemaKind,
+  V extends AnySchemaVersion<K>,
+> = K extends SchemaKind ? (V extends SchemaVersion<K> ? SchemaData<K, V> : never) : never;

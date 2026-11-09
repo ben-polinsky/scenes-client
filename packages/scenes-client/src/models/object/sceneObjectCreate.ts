@@ -3,7 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import { isObject } from "../../utilities.js";
-import { SchemaData, SchemaKind, SchemaVersion } from "./types/sceneObjectSchemas.js";
+import {
+  AnySchemaVersion,
+  SchemaData,
+  SchemaKind,
+  SchemaVersion,
+} from "./types/sceneObjectSchemas.js";
 import { ResourceStylingSchemas, StandardSchemas } from "./types/schemaCategories.js";
 
 /**
@@ -75,11 +80,15 @@ export interface StandardObjectCreate<
  */
 export type SceneObjectCreate<
   K extends SchemaKind = SchemaKind,
-  V extends SchemaVersion<K> = SchemaVersion<K>,
+  V extends AnySchemaVersion<K> = AnySchemaVersion<K>,
 > = K extends ResourceStylingSchemas
-  ? ResourceStylingObjectCreate<K, V>
+  ? V extends SchemaVersion<K>
+    ? ResourceStylingObjectCreate<K, V>
+    : never
   : K extends StandardSchemas
-    ? StandardObjectCreate<K, V>
+    ? V extends SchemaVersion<K>
+      ? StandardObjectCreate<K, V>
+      : never
     : never;
 
 /**

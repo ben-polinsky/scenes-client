@@ -9,7 +9,7 @@ import {
   ResourceStylingObjectCreate,
   StandardObjectCreate,
 } from "./sceneObjectCreate.js";
-import { SchemaKind, SchemaVersion } from "./types/sceneObjectSchemas.js";
+import { AnySchemaVersion, SchemaKind, SchemaVersion } from "./types/sceneObjectSchemas.js";
 import { ResourceStylingSchemas, StandardSchemas } from "./types/schemaCategories.js";
 
 /**
@@ -57,11 +57,15 @@ export interface StandardObject<
  */
 export type SceneObject<
   K extends SchemaKind = SchemaKind,
-  V extends SchemaVersion<K> = SchemaVersion<K>,
+  V extends AnySchemaVersion<K> = AnySchemaVersion<K>,
 > = K extends ResourceStylingSchemas
-  ? ResourceStylingObject<K, V>
+  ? V extends SchemaVersion<K>
+    ? ResourceStylingObject<K, V>
+    : never
   : K extends StandardSchemas
-    ? StandardObject<K, V>
+    ? V extends SchemaVersion<K>
+      ? StandardObject<K, V>
+      : never
     : never;
 
 export function isSceneObject(v: unknown): v is SceneObject {
