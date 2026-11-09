@@ -1,5 +1,5 @@
 ---
-"@itwin/scenes-client": patch
+"@itwin/scenes-client": minor
 ---
 
 Accept every schema version in the default `SceneObject`, `SceneObjectCreate`, `SceneObjectUpdate`, `CreateSceneObjectOperation` and `UpdateSceneObjectOperation` types.
