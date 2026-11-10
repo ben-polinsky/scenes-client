@@ -13,8 +13,29 @@ import {
   SceneObjectCreate,
   SceneObjectUpdate,
   SchemaData,
+  SchemaKind,
+  SchemaVersion,
   UpdateSceneObjectOperation,
 } from "../src/models/index.js";
+
+describe("SchemaVersion", () => {
+  it("includes every version of every kind in a union", () => {
+    expectTypeOf<"2.0.0">().toExtend<SchemaVersion<SchemaKind>>();
+    expectTypeOf<SchemaVersion<"Cutout" | "Layer">>().toEqualTypeOf<"1.0.0" | "2.0.0">();
+  });
+
+  it("keeps only the versions of a single kind", () => {
+    expectTypeOf<SchemaVersion<"Layer">>().toEqualTypeOf<"1.0.0">();
+  });
+});
+
+describe("SchemaData", () => {
+  it("keeps only valid pairs of a kind and a version", () => {
+    expectTypeOf<SchemaData<"Cutout" | "Layer", "2.0.0">>().toEqualTypeOf<
+      SchemaData<"Cutout", "2.0.0">
+    >();
+  });
+});
 
 describe("SceneObject", () => {
   it("accepts every version of a kind by default", () => {

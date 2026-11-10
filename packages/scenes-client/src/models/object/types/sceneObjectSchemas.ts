@@ -702,14 +702,20 @@ export interface ScenesApiSchemas {
 export type SchemaKind = keyof ScenesApiSchemas;
 
 /**
- * Available versions for a specific schema kind
- * @template K Schema kind to get versions for
+ * Versions of one or more schema kinds.
+ * For example, `SchemaVersion<"Cutout" | "Layer">` is `"1.0.0" | "2.0.0"`.
+ * @template K Schema kind, or several kinds joined with `|`
  */
-export type SchemaVersion<K extends SchemaKind> = keyof ScenesApiSchemas[K];
+export type SchemaVersion<K extends SchemaKind> = K extends SchemaKind
+  ? keyof ScenesApiSchemas[K]
+  : never;
 
 /**
  * Gets the data structure for a specific schema kind and version.
  * Core type that provides the actual schema interface.
+ * With several kinds or versions, this is the data of each kind at each of its
+ * versions. For example, `SchemaData<"Cutout" | "Layer", "2.0.0">` is the Cutout
+ * 2.0.0 data, because Layer has no 2.0.0.
  * @template K Schema kind (ex: 'Layer', 'View3d')
  * @template V Schema version (ex: '1.0.0')
  *
@@ -728,27 +734,8 @@ export type SchemaVersion<K extends SchemaKind> = keyof ScenesApiSchemas[K];
  * }
  * ```
  */
-export type SchemaData<K extends SchemaKind, V extends SchemaVersion<K>> = ScenesApiSchemas[K][V];
-
-/**
- * Versions of each kind in `K`, taken one kind at a time.
- *
- * `SchemaVersion<K>` keeps only the versions that every kind in `K` shares.
- * For all kinds that is `"1.0.0"`, which drops newer versions such as Cutout `"2.0.0"`.
- * Use this type when `K` can be a union of kinds.
- * @template K Schema kind or union of schema kinds
- */
-export type AnySchemaVersion<K extends SchemaKind> = K extends SchemaKind
-  ? SchemaVersion<K>
+export type SchemaData<K extends SchemaKind, V extends SchemaVersion<K>> = K extends SchemaKind
+  ? V extends keyof ScenesApiSchemas[K]
+    ? ScenesApiSchemas[K][V]
+    : never
   : never;
-
-/**
- * Data of each kind in `K` at each of its versions in `V`.
- * Pairs of a kind and a version that do not exist are left out.
- * @template K Schema kind or union of schema kinds
- * @template V Schema version or union of schema versions
- */
-export type AnySchemaData<
-  K extends SchemaKind,
-  V extends AnySchemaVersion<K>,
-> = K extends SchemaKind ? (V extends SchemaVersion<K> ? SchemaData<K, V> : never) : never;

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { SceneObjectCreate } from "./sceneObjectCreate.js";
 import { SceneObjectUpdate } from "./sceneObjectUpdate.js";
-import { AnySchemaVersion, SchemaKind } from "./types/sceneObjectSchemas.js";
+import { SchemaKind, SchemaVersion } from "./types/sceneObjectSchemas.js";
 
 /**
  * Operation types for bulk scene object updates
@@ -41,7 +41,7 @@ export interface SceneObjectOperationBase {
  */
 export interface CreateSceneObjectOperation<
   K extends SchemaKind = SchemaKind,
-  V extends AnySchemaVersion<K> = AnySchemaVersion<K>,
+  V extends SchemaVersion<K> = SchemaVersion<K>,
 > extends SceneObjectOperationBase {
   /** Operation type */
   op: OperationType.CREATE;
@@ -66,7 +66,7 @@ export interface CreateSceneObjectOperation<
  */
 export interface UpdateSceneObjectOperation<
   K extends SchemaKind = SchemaKind,
-  V extends AnySchemaVersion<K> = AnySchemaVersion<K>,
+  V extends SchemaVersion<K> = SchemaVersion<K>,
 > extends SceneObjectOperationBase {
   /** Operation type */
   op: OperationType.UPDATE;
